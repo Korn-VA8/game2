@@ -79,7 +79,7 @@ export class MainMenu {
     // Subtitle
     yPos += 45;
     const subtitle = new Text({
-      text: 'Jelly Merge Puzzle',
+      text: 'mi ❤️',
       style: new TextStyle({
         fontFamily: FONT_BODY,
         fontSize: 16,
