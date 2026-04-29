@@ -171,6 +171,63 @@ export class AnimalTheme {
          faceCtx.moveTo(0, r*0.2).lineTo(-r*0.15, r*0.6).lineTo(0, r*0.4).lineTo(r*0.15, r*0.6).fill({ color: 0xFFFF55, alpha: 0.9 });
       }
       SpriteGenerator.drawKawaiiFace(faceCtx, r, -r * 0.1, exp);
+
+    } else if (level === 12) { // Frog 🐸
+      // Big protruding eyes
+      const frogEyeY = -r * 0.65 + earWag * r;
+      const frogEyeR = r * 0.25;
+      g.circle(-r * 0.35, frogEyeY, frogEyeR).fill({ color: c });
+      g.circle(-r * 0.35, frogEyeY, frogEyeR * 0.7).fill({ color: 0xFFFFFF });
+      g.circle(-r * 0.35, frogEyeY, frogEyeR * 0.35).fill({ color: 0x1A1A2A });
+      g.circle(-r * 0.35 + frogEyeR * 0.1, frogEyeY - frogEyeR * 0.15, frogEyeR * 0.12).fill({ color: 0xFFFFFF });
+      g.circle(r * 0.35, frogEyeY, frogEyeR).fill({ color: c });
+      g.circle(r * 0.35, frogEyeY, frogEyeR * 0.7).fill({ color: 0xFFFFFF });
+      g.circle(r * 0.35, frogEyeY, frogEyeR * 0.35).fill({ color: 0x1A1A2A });
+      g.circle(r * 0.35 + frogEyeR * 0.1, frogEyeY - frogEyeR * 0.15, frogEyeR * 0.12).fill({ color: 0xFFFFFF });
+      // Belly
+      g.ellipse(0, r * 0.15, r * 0.55, r * 0.45).fill({ color: a, alpha: 0.4 });
+      // Spots
+      g.circle(-r * 0.35, r * 0.1, r * 0.08).fill({ color: a, alpha: 0.3 });
+      g.circle(r * 0.25, -r * 0.15, r * 0.06).fill({ color: a, alpha: 0.3 });
+      // Webbed feet
+      g.moveTo(-r * 0.6, r * 0.7).lineTo(-r * 0.9, r * 0.9).lineTo(-r * 0.7, r * 0.8).lineTo(-r * 0.85, r * 1.0).lineTo(-r * 0.55, r * 0.85).fill({ color: a });
+      g.moveTo(r * 0.6, r * 0.7).lineTo(r * 0.9, r * 0.9).lineTo(r * 0.7, r * 0.8).lineTo(r * 0.85, r * 1.0).lineTo(r * 0.55, r * 0.85).fill({ color: a });
+      // Tongue on impact
+      if (exp === 'impact' || phys.vy > 8) {
+        const tongueLen = r * 0.6 + Math.sin(time * 4) * r * 0.1;
+        faceCtx.moveTo(-r * 0.05, r * 0.2).quadraticCurveTo(0, r * 0.2 + tongueLen, r * 0.05, r * 0.2).fill({ color: 0xFF6688 });
+        faceCtx.circle(0, r * 0.2 + tongueLen, r * 0.06).fill({ color: 0xFF4466 });
+      }
+      // Wide smile
+      faceCtx.moveTo(-r * 0.3, r * 0.15).quadraticCurveTo(0, r * 0.35, r * 0.3, r * 0.15).stroke({ color: 0x3A5A30, width: r * 0.05, cap: 'round' });
+      faceCtx.circle(-r * 0.5, r * 0.05, r * 0.1).fill({ color: 0xFF5555, alpha: 0.3 });
+      faceCtx.circle(r * 0.5, r * 0.05, r * 0.1).fill({ color: 0xFF5555, alpha: 0.3 });
+
+    } else if (level === 13) { // Toad 🐸 with crown
+      const toadEyeY = -r * 0.55 + earWag * r * 0.5;
+      const toadEyeR = r * 0.2;
+      g.circle(-r * 0.35, toadEyeY, toadEyeR).fill({ color: c });
+      g.circle(-r * 0.35, toadEyeY, toadEyeR * 0.6).fill({ color: 0xE8D5A0 });
+      g.circle(-r * 0.35, toadEyeY, toadEyeR * 0.3).fill({ color: 0x1A1A2A });
+      g.circle(r * 0.35, toadEyeY, toadEyeR).fill({ color: c });
+      g.circle(r * 0.35, toadEyeY, toadEyeR * 0.6).fill({ color: 0xE8D5A0 });
+      g.circle(r * 0.35, toadEyeY, toadEyeR * 0.3).fill({ color: 0x1A1A2A });
+      // Grumpy eyebrow ridges
+      g.moveTo(-r * 0.55, toadEyeY - toadEyeR * 0.8).lineTo(-r * 0.2, toadEyeY - toadEyeR * 0.4).stroke({ color: a, width: r * 0.08, cap: 'round' });
+      g.moveTo(r * 0.55, toadEyeY - toadEyeR * 0.8).lineTo(r * 0.2, toadEyeY - toadEyeR * 0.4).stroke({ color: a, width: r * 0.08, cap: 'round' });
+      // Warty bumps
+      const warts = [{ x: -r*0.45, y: -r*0.1, s: r*0.06 },{ x: r*0.5, y: -r*0.2, s: r*0.07 },{ x: -r*0.3, y: r*0.3, s: r*0.05 },{ x: r*0.35, y: r*0.1, s: r*0.06 },{ x: -r*0.55, y: r*0.15, s: r*0.04 },{ x: r*0.6, y: r*0.3, s: r*0.05 }];
+      for (const w of warts) { g.circle(w.x, w.y, w.s).fill({ color: a, alpha: 0.4 }); }
+      // Belly
+      g.ellipse(0, r * 0.2, r * 0.65, r * 0.5).fill({ color: a, alpha: 0.3 });
+      // Stubby legs
+      g.ellipse(-r * 0.65, r * 0.6, r * 0.2, r * 0.12).fill({ color: a });
+      g.ellipse(r * 0.65, r * 0.6, r * 0.2, r * 0.12).fill({ color: a });
+      // Crown 👑
+      const crownY = -r * 0.85 + phys.vy * 0.05;
+      g.moveTo(-r*0.25, crownY).lineTo(-r*0.35, crownY-r*0.3).lineTo(-r*0.1, crownY-r*0.15).lineTo(0, crownY-r*0.4).lineTo(r*0.1, crownY-r*0.15).lineTo(r*0.35, crownY-r*0.3).lineTo(r*0.25, crownY).fill({ color: 0xFFD700 });
+      // Grumpy mouth
+      faceCtx.moveTo(-r*0.25, r*0.2).quadraticCurveTo(0, r*0.1, r*0.25, r*0.2).stroke({ color: 0x3A4A30, width: r*0.04, cap: 'round' });
     }
   }
 }

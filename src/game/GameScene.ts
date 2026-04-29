@@ -1,6 +1,8 @@
 import Matter from 'matter-js';
 import { Application, Container, Graphics, Text } from 'pixi.js';
 import { Barrel } from './Barrel';
+import { CampaignBarrel } from './CampaignBarrel';
+import type { BarrelShape } from './LevelConfig';
 import { Creature, getCreatureConfig, getCreatureRadius, MAX_LEVEL } from './Creature';
 import { ScoreSystem } from './ScoreSystem';
 import { UpgradeManager } from '../meta/UpgradeManager';
@@ -32,7 +34,8 @@ export class GameScene {
   private app: Application;
   private engine: Matter.Engine;
   private runner: Matter.Runner;
-  private barrel: Barrel;
+  private barrel: Barrel | CampaignBarrel;
+  private barrelShape: BarrelShape;
   private creatures: Creature[] = [];
   private gameContainer: Container;
   private uiContainer: Container;
@@ -75,12 +78,14 @@ export class GameScene {
     scoreSystem?: ScoreSystem,
     upgradeManager?: UpgradeManager,
     skinManager?: SkinManager,
+    barrelShape: BarrelShape = 'U',
   ) {
     this.app = app;
     this.scoreSystem = scoreSystem ?? new ScoreSystem();
     this.upgradeManager = upgradeManager ?? new UpgradeManager();
     this.skinManager = skinManager ?? null;
     this.callbacks = callbacks;
+    this.barrelShape = barrelShape;
 
     // Create containers
     this.container = new Container();
@@ -107,7 +112,16 @@ export class GameScene {
     // Create barrel at center of screen
     const cx = app.screen.width / 2;
     const cy = app.screen.height / 2 + 40;
-    this.barrel = new Barrel(this.engine, cx, cy);
+    if (this.barrelShape === 'U') {
+      this.barrel = new Barrel(this.engine, cx, cy);
+    } else {
+      this.barrel = new CampaignBarrel(this.engine, app.screen.width, app.screen.height, {
+        shape: this.barrelShape,
+        widthRatio: 1.0,
+        heightRatio: 1.0,
+        obstacles: [],
+      });
+    }
     this.gameContainer.addChild(this.barrel.container);
 
     // Create drop preview line
@@ -752,7 +766,9 @@ export class GameScene {
 
   /** Set barrel radius multiplier (from UpgradeManager) */
   setBarrelRadiusMultiplier(mult: number): void {
-    this.barrel.setRadiusMultiplier(mult);
+    if (this.barrel instanceof Barrel) {
+      this.barrel.setRadiusMultiplier(mult);
+    }
   }
 
 

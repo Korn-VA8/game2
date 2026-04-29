@@ -34,6 +34,8 @@ export interface SaveData {
   campaignUnlocked: number;
   /** Campaign: completed level IDs */
   campaignCompleted: number[];
+  /** Classic mode barrel shape preference */
+  barrelShape: string;
 }
 
 // ─── Constants ──────────────────────────────────────
@@ -139,6 +141,7 @@ export class SaveManager {
       language: null,
       campaignUnlocked: 1,
       campaignCompleted: [],
+      barrelShape: 'U',
     };
   }
 
@@ -190,6 +193,7 @@ export class SaveManager {
       language:           partial.language           ?? defaults.language,
       campaignUnlocked:   partial.campaignUnlocked   ?? defaults.campaignUnlocked,
       campaignCompleted:  partial.campaignCompleted  ?? defaults.campaignCompleted,
+      barrelShape:        partial.barrelShape        ?? defaults.barrelShape,
     };
   }
 }

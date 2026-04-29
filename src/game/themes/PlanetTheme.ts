@@ -228,6 +228,9 @@ export class PlanetTheme {
       g.moveTo(-r*0.1, r*0.9).lineTo(r*0.1, r*0.9).lineTo(0, r*2.2).fill({ color: 0xFF00FF, alpha: 0.9 });
 
       SpriteGenerator.drawKawaiiFace(faceCtx, r, 0, exp);
+
+    } else if (level >= 12) {
+      SpriteGenerator.drawKawaiiFace(faceCtx, r, 0, exp);
     }
   }
 }

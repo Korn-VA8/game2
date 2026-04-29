@@ -201,6 +201,9 @@ export class FoodTheme {
        g.moveTo(cx-r*0.1, cy).lineTo(cx, cy-r*0.3).lineTo(cx+r*0.1, cy).stroke({ color: 0xFF9900, width: r*0.08, cap: 'round' });
        
        SpriteGenerator.drawKawaiiFace(faceCtx, r, r*0.2, exp);
+
+    } else if (level >= 12) { // Generic high level — just face
+       SpriteGenerator.drawKawaiiFace(faceCtx, r, 0, exp);
     }
   }
 }

@@ -1,9 +1,19 @@
 import { Container, Graphics, Text } from 'pixi.js';
 import { t } from '../i18n/i18n';
 
+const BARREL_SHAPES = ['U', 'V', 'W', 'cup', 'asym'] as const;
+const BARREL_SHAPE_LABELS: Record<string, string> = {
+  'U': 'U — Стандарт',
+  'V': 'V — Воронка',
+  'W': 'W — Раскол',
+  'cup': '☕ Чаша',
+  'asym': '⚡ Асимметрия',
+};
+
 export interface SettingsPopupCallbacks {
   onSoundToggle: () => void;
   onLanguageToggle: () => void;
+  onBarrelShapeChange: (shape: string) => void;
   onReset: () => void;
   onClose: () => void;
 }
@@ -16,22 +26,27 @@ export class SettingsPopup {
   
   private soundBtn: Container;
   private langBtn: Container;
+  private barrelBtn: Container;
   private resetBtn: Container;
 
   private soundText: Text;
   private langText: Text;
+  private barrelText: Text;
   private resetText: Text;
 
   private soundEnabled: boolean;
+  private barrelShapeIndex: number;
   private confirmResetState: boolean = false;
 
   constructor(
     sw: number, sh: number,
     soundEnabled: boolean,
+    barrelShape: string,
     callbacks: SettingsPopupCallbacks
   ) {
     this.callbacks = callbacks;
     this.soundEnabled = soundEnabled;
+    this.barrelShapeIndex = Math.max(0, BARREL_SHAPES.indexOf(barrelShape as any));
 
     this.container = new Container();
 
@@ -43,7 +58,7 @@ export class SettingsPopup {
 
     this.panel = new Graphics();
     const pw = Math.min(sw * 0.85, 400);
-    const ph = 360;
+    const ph = 430;
     this.panel.roundRect(0, 0, pw, ph, 24).fill({ color: 0x24243e });
     this.panel.stroke({ color: 0x4a90d9, width: 4 });
     this.panel.position.set((sw - pw) / 2, (sh - ph) / 2);
@@ -66,11 +81,13 @@ export class SettingsPopup {
     // Create buttons
     this.soundBtn = new Container();
     this.langBtn = new Container();
+    this.barrelBtn = new Container();
     this.resetBtn = new Container();
 
-    this.soundText = this.createButton(this.soundBtn, pw / 2, 110, '', 0x334455);
-    this.langText = this.createButton(this.langBtn, pw / 2, 180, t('settings_lang'), 0x4a90d9);
-    this.resetText = this.createButton(this.resetBtn, pw / 2, 250, t('settings_reset'), 0xd94a4a);
+    this.soundText = this.createButton(this.soundBtn, pw / 2, 100, '', 0x334455);
+    this.langText = this.createButton(this.langBtn, pw / 2, 170, t('settings_lang'), 0x4a90d9);
+    this.barrelText = this.createButton(this.barrelBtn, pw / 2, 240, '', 0x2a5a4e);
+    this.resetText = this.createButton(this.resetBtn, pw / 2, 310, t('settings_reset'), 0xd94a4a);
 
     this.updateButtonLabels();
 
@@ -86,6 +103,11 @@ export class SettingsPopup {
     });
     this.setupInteraction(this.langBtn, () => {
       this.callbacks.onLanguageToggle();
+    });
+    this.setupInteraction(this.barrelBtn, () => {
+      this.barrelShapeIndex = (this.barrelShapeIndex + 1) % BARREL_SHAPES.length;
+      this.updateButtonLabels();
+      this.callbacks.onBarrelShapeChange(BARREL_SHAPES[this.barrelShapeIndex]);
     });
     this.setupInteraction(this.resetBtn, () => {
       if (!this.confirmResetState) {
@@ -131,6 +153,7 @@ export class SettingsPopup {
     const soundMark = this.soundEnabled ? 'ON' : 'OFF';
     this.soundText.text = `${t('settings_sound')}: ${soundMark}`;
     this.langText.text = t('settings_lang');
+    this.barrelText.text = `🏺 ${BARREL_SHAPE_LABELS[BARREL_SHAPES[this.barrelShapeIndex]] ?? 'U'}`;
     
     if (this.confirmResetState) {
       this.resetText.text = t('settings_confirm');

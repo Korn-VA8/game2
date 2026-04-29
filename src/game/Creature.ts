@@ -5,7 +5,7 @@ import { SpriteGenerator } from './SpriteGenerator';
 import type { CreatureExpression } from './SpriteGenerator';
 import { VFXManager } from './VFXManager';
 
-/** Size config per creature level (1-11) — reduced by 25% for tighter gameplay */
+/** Size config per creature level (1-13) — reduced by 25% for tighter gameplay */
 const CREATURE_RADII: number[] = [
   0,   // index 0 unused
   10,  // 1 — Мышка
@@ -19,6 +19,8 @@ const CREATURE_RADII: number[] = [
   71,  // 9 — Лев
   83,  // 10 — Динозавр
   96,  // 11 — Дракон
+  110, // 12 — Лягушка
+  125, // 13 — Жаба
 ];
 
 /** Default color palette (Skin 0 — Jelly Pets) — matches SkinManager */
@@ -26,6 +28,8 @@ const CREATURE_COLORS: number[] = [
   0x000000,  // index 0 unused
   0xFF85A2, 0xFFB088, 0xFFD966, 0x7EC8E3, 0x88E8C0,
   0xFFCF8B, 0xCDA4DE, 0x7FDBCA, 0xFFE87C, 0xD4A5FF, 0xFFF5BA,
+  0x7BCF5C, // 12 — Лягушка (lime green)
+  0x5B8C3E, // 13 — Жаба (dark olive green)
 ];
 
 /** Number of points for the jelly contour — fewer for small creatures */
@@ -43,7 +47,7 @@ const SQUASH_SPRING = 0.15;
 /** Squash/stretch damping */
 const SQUASH_DAMPING = 0.7;
 
-export const MAX_LEVEL = 11;
+export const MAX_LEVEL = 13;
 
 export interface CreatureConfig {
   radius: number;

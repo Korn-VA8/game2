@@ -19,7 +19,7 @@ export type SpriteTheme =
 
 export interface SpriteDescriptor {
   theme: SpriteTheme;
-  level: number;       // 1-11
+  level: number;       // 1-13
   accentColor?: string;
 }
 
@@ -77,63 +77,53 @@ const GACHA_TOTAL_WEIGHT = GACHA_WEIGHTS.reduce((s, w) => s + w.weight, 0); // 1
 const SKIN_CONFIGS: readonly SkinConfig[] = [
   {
     id: 0, name: 'Желейные Зверята', rarity: 'common', obtainMethod: 'default',
-    // Fruity pastels: strawberry, peach, lemon, sky, mint, apricot, lavender, seafoam, sunny, lilac, cream
-    colors: ['#FF85A2','#FFB088','#FFD966','#7EC8E3','#88E8C0','#FFCF8B','#CDA4DE','#7FDBCA','#FFE87C','#D4A5FF','#FFF5BA'],
-    sprites: Array.from({length: 11}, (_, i) => ({ theme: 'animal', level: i + 1 }))
+    colors: ['#FF85A2','#FFB088','#FFD966','#7EC8E3','#88E8C0','#FFCF8B','#CDA4DE','#7FDBCA','#FFE87C','#D4A5FF','#FFF5BA','#7BCF5C','#5B8C3E'],
+    sprites: Array.from({length: 13}, (_, i) => ({ theme: 'animal', level: i + 1 }))
   },
   {
     id: 1, name: 'Сладости', rarity: 'common', obtainMethod: 'gacha',
-    // Macaroon pastels: bubblegum, rose, blush coral, tangerine, banana cream, pistachio, mint candy, cotton candy, baby pink, orchid, grape soda
-    colors: ['#FFB3D9','#FF8EB5','#FF9B9B','#FFA96B','#FFE066','#B8F28B','#7EDFCF','#FFD1F0','#FF7EB3','#E088FF','#C9A0FF'],
-    sprites: Array.from({length: 11}, (_, i) => ({ theme: 'food', level: i + 1 }))
+    colors: ['#FFB3D9','#FF8EB5','#FF9B9B','#FFA96B','#FFE066','#B8F28B','#7EDFCF','#FFD1F0','#FF7EB3','#E088FF','#C9A0FF','#A8E87B','#7CC06A'],
+    sprites: Array.from({length: 13}, (_, i) => ({ theme: 'food', level: i + 1 }))
   },
   {
     id: 2, name: 'Космос', rarity: 'common', obtainMethod: 'gacha',
-    // Solid planetary base colors: Moon, Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune, Sun, Black Hole
-    colors: ['#D0D4DC','#9C8A79','#E6B35C','#2166E5','#CE4A21','#C79E6F','#EAD39C','#99E6FF','#3366CC','#FF8C00','#1A0530'],
-    sprites: Array.from({length: 11}, (_, i) => ({ theme: 'planet', level: i + 1 }))
+    colors: ['#D0D4DC','#9C8A79','#E6B35C','#2166E5','#CE4A21','#C79E6F','#EAD39C','#99E6FF','#3366CC','#FF8C00','#1A0530','#48CC4D','#2E8B2E'],
+    sprites: Array.from({length: 13}, (_, i) => ({ theme: 'planet', level: i + 1 }))
   },
   {
     id: 3, name: 'Хэллоуин', rarity: 'uncommon', obtainMethod: 'gacha',
-    // Bright arcade halloween: pumpkin, tangerine, lemon, neon green, jade, bright purple, electric violet, hot coral, mango, glowing white, ghost lavender
-    colors: ['#FF7744','#FFB347','#FFF06B','#5FE89A','#3DDBAB','#A66EFF','#C77DFF','#FF6F8A','#FFCD5C','#F0F0FF','#E4D2FF'],
-    sprites: Array.from({length: 11}, (_, i) => ({ theme: 'spooky', level: i + 1 }))
+    colors: ['#FF7744','#FFB347','#FFF06B','#5FE89A','#3DDBAB','#A66EFF','#C77DFF','#FF6F8A','#FFCD5C','#F0F0FF','#E4D2FF','#6FBF43','#4E8B32'],
+    sprites: Array.from({length: 13}, (_, i) => ({ theme: 'spooky', level: i + 1 }))
   },
   {
     id: 4, name: 'Зимний', rarity: 'uncommon', obtainMethod: 'gacha',
-    // Icy arctic: snowdrift, ice blue, frost, sky blue, bright azure, periwinkle, royal periwinkle, gold accent, amber, rose, mint
-    colors: ['#E8F0FE','#B8D8F8','#9DC8F0','#7BBAFF','#5AA8FF','#8B8EFF','#7878FF','#FFE07A','#FFC05C','#FF8FAA','#8BFFCF'],
-    sprites: Array.from({length: 11}, (_, i) => ({ theme: 'winter', level: i + 1 }))
+    colors: ['#E8F0FE','#B8D8F8','#9DC8F0','#7BBAFF','#5AA8FF','#8B8EFF','#7878FF','#FFE07A','#FFC05C','#FF8FAA','#8BFFCF','#70D650','#4FAF3A'],
+    sprites: Array.from({length: 13}, (_, i) => ({ theme: 'winter', level: i + 1 }))
   },
   {
     id: 5, name: 'Мячи', rarity: 'uncommon', obtainMethod: 'gacha',
-    // Bright sporty: basketball orange, tennis lime, soccer white, grass green, emerald, sky blue, baby blue, soft violet, golden, coral, teal
-    colors: ['#FF7B4F','#FFBA33','#FFE0B2','#7ED957','#44CF6C','#48ADFF','#8AD4FF','#B5A5FF','#FFE15D','#FF8566','#4DDBC9'],
-    sprites: Array.from({length: 11}, (_, i) => ({ theme: 'sport', level: i + 1 }))
+    colors: ['#FF7B4F','#FFBA33','#FFE0B2','#7ED957','#44CF6C','#48ADFF','#8AD4FF','#B5A5FF','#FFE15D','#FF8566','#4DDBC9','#66CC66','#3D8C3D'],
+    sprites: Array.from({length: 13}, (_, i) => ({ theme: 'sport', level: i + 1 }))
   },
   {
     id: 6, name: 'Мемы', rarity: 'rare', obtainMethod: 'gacha',
-    // Internet RGB: neon pink, hot magenta, electric indigo, soft lavender, emerald, aqua, bright blue, azure light, soft yellow, peach, salmon
-    colors: ['#FF80BF','#FF5CAD','#7C65EB','#B8A9FF','#3BD6A0','#3FEAD8','#4DA6FF','#8FCBFF','#FFF3A0','#FFB79F','#FF8F8F'],
-    sprites: Array.from({length: 11}, (_, i) => ({ theme: 'meme', level: i + 1 }))
+    colors: ['#FF80BF','#FF5CAD','#7C65EB','#B8A9FF','#3BD6A0','#3FEAD8','#4DA6FF','#8FCBFF','#FFF3A0','#FFB79F','#FF8F8F','#5CDB5C','#3EA83E'],
+    sprites: Array.from({length: 13}, (_, i) => ({ theme: 'meme', level: i + 1 }))
   },
   {
     id: 7, name: 'Кристаллы', rarity: 'rare', obtainMethod: 'gacha',
-    // Gemstone lights: aquamarine, sapphire light, amethyst light, diamond, moonstone, rose quartz, crystal pink, teal gem, emerald light, topaz, ruby light
-    colors: ['#8FFFEF','#8AC8FF','#C1A5FF','#E8F0FF','#D4E4FF','#FFB3D0','#FF9EC4','#60E8D8','#6AFFBE','#FFE88A','#FF8FAF'],
-    sprites: Array.from({length: 11}, (_, i) => ({ theme: 'crystal', level: i + 1 }))
+    colors: ['#8FFFEF','#8AC8FF','#C1A5FF','#E8F0FF','#D4E4FF','#FFB3D0','#FF9EC4','#60E8D8','#6AFFBE','#FFE88A','#FF8FAF','#7AE87A','#59B359'],
+    sprites: Array.from({length: 13}, (_, i) => ({ theme: 'crystal', level: i + 1 }))
   },
   {
     id: 8, name: 'Золотые Звери', rarity: 'legendary', obtainMethod: 'ads_only',
-    // Bright luxe gold: white gold, champagne, bright gold, amber gold, marigold, sunflower, warm gold, honey, light gold, lemon gold, buttercup
-    colors: ['#FFF4CC','#FFE89A','#FFD95A','#FFC940','#FFB830','#FFA820','#FF9810','#FFE680','#FFFACD','#FFF06B','#FFE44D'],
-    sprites: Array.from({length: 11}, (_, i) => ({ theme: 'golden', level: i + 1 }))
+    colors: ['#FFF4CC','#FFE89A','#FFD95A','#FFC940','#FFB830','#FFA820','#FF9810','#FFE680','#FFFACD','#FFF06B','#FFE44D','#CCE855','#A8C43C'],
+    sprites: Array.from({length: 13}, (_, i) => ({ theme: 'golden', level: i + 1 }))
   },
   {
     id: 9, name: 'Неоновые', rarity: 'legendary', obtainMethod: 'ads_only',
-    // Pure 100% saturated neons: electric green, crimson neon, cyan, magenta, yellow, hot pink, ice blue, orange neon, lime, ultraviolet, red-orange
-    colors: ['#39FF14','#FF1053','#00FFFF','#FF00FF','#FFFF00','#FF6EC7','#7DF9FF','#FF6D1F','#CCFF00','#BF00FF','#FF4F00'],
-    sprites: Array.from({length: 11}, (_, i) => ({ theme: 'neon', level: i + 1 }))
+    colors: ['#39FF14','#FF1053','#00FFFF','#FF00FF','#FFFF00','#FF6EC7','#7DF9FF','#FF6D1F','#CCFF00','#BF00FF','#FF4F00','#00FF7F','#00CC44'],
+    sprites: Array.from({length: 13}, (_, i) => ({ theme: 'neon', level: i + 1 }))
   },
 ];
 

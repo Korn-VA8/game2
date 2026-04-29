@@ -63,6 +63,7 @@ interface AppState {
   campaignScreen: CampaignScreen | null;
   campaignUnlocked: number;
   campaignCompleted: Set<number>;
+  barrelShape: string;
   hud: HUD | null;
   mainMenu: MainMenu | null;
   shopScreen: ShopScreen | null;
@@ -165,6 +166,7 @@ async function main(): Promise<void> {
     campaignScreen: null,
     campaignUnlocked: saveData.campaignUnlocked ?? 1,
     campaignCompleted: new Set(saveData.campaignCompleted ?? []),
+    barrelShape: saveData.barrelShape ?? 'U',
     hud: null,
     mainMenu: null,
     shopScreen: null,
@@ -242,6 +244,7 @@ function collectSaveData(state: AppState): SaveData {
     language: state.language,
     campaignUnlocked: state.campaignUnlocked,
     campaignCompleted: [...state.campaignCompleted],
+    barrelShape: state.barrelShape,
   };
 }
 
@@ -409,7 +412,7 @@ function startGame(state: AppState): void {
     onDrop: () => {
       state.audioManager.play('drop');
     },
-  }, state.scoreSystem, state.upgradeManager, state.skinManager);
+  }, state.scoreSystem, state.upgradeManager, state.skinManager, state.barrelShape as any);
 
   // Apply barrel size upgrade
   state.gameScene.setBarrelRadiusMultiplier(barrelMult);
@@ -721,6 +724,7 @@ function showSettings(state: AppState): void {
   state.settingsPopup = new SettingsPopup(
     sw, sh,
     state.audioManager.soundEnabled,
+    state.barrelShape,
     {
       onSoundToggle: () => {
         const on = !state.audioManager.soundEnabled;
@@ -736,10 +740,14 @@ function showSettings(state: AppState): void {
         await autoSave(state);
         window.location.reload();
       },
+      onBarrelShapeChange: (shape: string) => {
+        state.audioManager.play('button_click');
+        state.barrelShape = shape;
+        autoSave(state);
+      },
       onReset: async () => {
         state.audioManager.play('button_click');
         await state.saveManager.resetProgress();
-        // Reload page to completely reset state
         window.location.reload();
       },
       onClose: () => {
