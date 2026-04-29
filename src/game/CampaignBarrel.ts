@@ -63,6 +63,8 @@ export class CampaignBarrel {
   private leftWall: { x: number; y: number }[] = [];
   private rightWall: { x: number; y: number }[] = [];
   private floor: { x: number; y: number }[] = [];
+  /** W-shape wedge triangle vertices (if any) */
+  private wedgeVertices: { x: number; y: number }[] = [];
 
   constructor(
     engine: Matter.Engine,
@@ -148,8 +150,8 @@ export class CampaignBarrel {
 
       case 'W': {
         // Split barrel — triangular wedge on the floor
-        const wedgeHalfW = hw * 0.15;
-        const wedgeHeight = hh * 0.5;
+        const wedgeHalfW = hw * 0.25;
+        const wedgeHeight = hh * 0.45;
         this.leftWall = [
           { x: cx - hw, y: cy - hh },
           { x: cx - hw, y: cy + hh },
@@ -158,13 +160,16 @@ export class CampaignBarrel {
           { x: cx + hw, y: cy - hh },
           { x: cx + hw, y: cy + hh },
         ];
-        // Floor is split: left floor, wedge up, wedge down, right floor
+        // Floor: two flat segments (left and right of wedge)
         this.floor = [
           { x: cx - hw, y: cy + hh },
+          { x: cx + hw, y: cy + hh },
+        ];
+        // Wedge stored separately — will be built as a triangle body
+        this.wedgeVertices = [
           { x: cx - wedgeHalfW, y: cy + hh },
           { x: cx, y: cy + hh - wedgeHeight },
           { x: cx + wedgeHalfW, y: cy + hh },
-          { x: cx + hw, y: cy + hh },
         ];
         break;
       }
@@ -278,6 +283,24 @@ export class CampaignBarrel {
       createWallSegment(this.floor[i], this.floor[i + 1], 'left');
     }
 
+    // Build W-shape wedge as a solid triangle body (if present)
+    if (this.wedgeVertices.length === 3) {
+      const wv = this.wedgeVertices;
+      const wcx = (wv[0].x + wv[1].x + wv[2].x) / 3;
+      const wcy = (wv[0].y + wv[1].y + wv[2].y) / 3;
+      const wedgeBody = Matter.Bodies.fromVertices(wcx, wcy, [
+        wv.map(v => ({ x: v.x, y: v.y })),
+      ], {
+        ...(WALL_OPTIONS as Matter.IChamferableBodyDefinition),
+        chamfer: { radius: 4 },
+        label: 'barrel_wedge',
+      });
+      if (wedgeBody) {
+        this.segments.push(wedgeBody);
+        Matter.Composite.add(this.engine.world, wedgeBody);
+      }
+    }
+
     // Build lid across the top opening
     const leftTopX = this.leftWall[0].x;
     const leftTopY = this.leftWall[0].y;
@@ -355,6 +378,23 @@ export class CampaignBarrel {
     drawPath(this.leftWall, 0x6bb5ff, 0.15 * pulseAlpha, 8);
     drawPath(this.rightWall, 0x6bb5ff, 0.15 * pulseAlpha, 8);
     drawPath(this.floor, 0x6bb5ff, 0.15 * pulseAlpha, 8);
+
+    // Draw W-shape wedge triangle (if present)
+    if (this.wedgeVertices.length === 3) {
+      const wv = this.wedgeVertices;
+      // Outer glow
+      drawPath(wv.concat([wv[0]]), 0x6bb5ff, 0.1 * pulseAlpha, 12);
+      // Main line
+      drawPath(wv.concat([wv[0]]), 0x4a90d9, pulseAlpha, 4);
+      // Inner glow
+      drawPath(wv.concat([wv[0]]), 0x6bb5ff, 0.15 * pulseAlpha, 8);
+      // Fill
+      this.graphics.moveTo(wv[0].x, wv[0].y);
+      this.graphics.lineTo(wv[1].x, wv[1].y);
+      this.graphics.lineTo(wv[2].x, wv[2].y);
+      this.graphics.closePath();
+      this.graphics.fill({ color: 0x1a1a2e, alpha: 0.5 });
+    }
 
     // Draw obstacles as glowing circles
     const barrelW = this.halfW * 2;
