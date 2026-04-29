@@ -27,6 +27,7 @@ const FONT_BODY = "'Inter', system-ui, sans-serif";
 
 export interface MainMenuCallbacks {
   onPlay: () => void;
+  onCampaign: () => void;
   onShop: () => void;
   onGacha: () => void;
   onWardrobe: () => void;
@@ -79,7 +80,7 @@ export class MainMenu {
     // Subtitle
     yPos += 45;
     const subtitle = new Text({
-      text: 'mi ❤️',
+      text: 'Jelly Merge Puzzle',
       style: new TextStyle({
         fontFamily: FONT_BODY,
         fontSize: 16,
@@ -137,16 +138,31 @@ export class MainMenu {
     this.coinsText.position.set(cx + 10, yPos);
     this.container.addChild(this.coinsText);
 
-    // ─── Play Button (large, pulsating) ───
+    // ─── Play Buttons: Endless + Campaign side by side ───
     yPos += 55;
-    const playIcon = IconFactory.createPlayIcon(22);
+    const playBtnW = Math.min(135, (screenWidth - 48) / 2);
+    const playBtnH = 56;
+    const playGap = 10;
+    const playLeft = cx - playBtnW - playGap / 2;
+
+    // Endless button (red, pulsating)
+    const playIcon = IconFactory.createPlayIcon(20);
     this.playBtn = this.createButton(
-      t('menu_play'), cx, yPos, 230, 60, BTN_PLAY_COLOR, 26, () => {
+      t('menu_endless'), playLeft + playBtnW / 2, yPos, playBtnW, playBtnH, BTN_PLAY_COLOR, 18, () => {
         this.animating = false;
         callbacks.onPlay();
       }, playIcon,
     );
     this.container.addChild(this.playBtn);
+
+    // Campaign button (blue-ish)
+    const campaignBtn = this.createButton(
+      t('menu_campaign'), playLeft + playBtnW + playGap + playBtnW / 2, yPos, playBtnW, playBtnH, 0x1e4a3a, 18, () => {
+        this.animating = false;
+        callbacks.onCampaign();
+      },
+    );
+    this.container.addChild(campaignBtn);
 
     // ─── 2×2 Button Grid ───
     yPos += 75;

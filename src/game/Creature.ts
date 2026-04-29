@@ -5,20 +5,20 @@ import { SpriteGenerator } from './SpriteGenerator';
 import type { CreatureExpression } from './SpriteGenerator';
 import { VFXManager } from './VFXManager';
 
-/** Size config per creature level (1-11) */
+/** Size config per creature level (1-11) — reduced by 25% for tighter gameplay */
 const CREATURE_RADII: number[] = [
   0,   // index 0 unused
-  13,  // 1 — Мышка (20 / 1.5)
-  20,  // 2 — Хомяк (30 / 1.5)
-  27,  // 3 — Зайка (40 / 1.5)
-  35,  // 4 — Котик (52 / 1.5)
-  44,  // 5 — Корги (66 / 1.5)
-  55,  // 6 — Лисичка (82 / 1.5)
-  67,  // 7 — Панда (100 / 1.5)
-  80,  // 8 — Медведь (120 / 1.5)
-  95,  // 9 — Лев (142 / 1.5)
-  111, // 10 — Динозавр (166 / 1.5)
-  128, // 11 — Дракон (192 / 1.5)
+  10,  // 1 — Мышка
+  15,  // 2 — Хомяк
+  20,  // 3 — Зайка
+  26,  // 4 — Котик
+  33,  // 5 — Корги
+  41,  // 6 — Лисичка
+  50,  // 7 — Панда
+  60,  // 8 — Медведь
+  71,  // 9 — Лев
+  83,  // 10 — Динозавр
+  96,  // 11 — Дракон
 ];
 
 /** Default color palette (Skin 0 — Jelly Pets) — matches SkinManager */

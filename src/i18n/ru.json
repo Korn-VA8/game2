@@ -58,5 +58,15 @@
   "anomaly_prefix": "АНОМАЛИЯ:",
   "anomaly_blackhole": "ЧЁРНАЯ ДЫРА",
   "anomaly_tornado": "ТОРНАДО",
-  "anomaly_moon": "ЛУННАЯ ГРАВИТАЦИЯ"
+  "anomaly_moon": "ЛУННАЯ ГРАВИТАЦИЯ",
+
+  "menu_endless": "БЕСКОНЕЧНАЯ",
+  "menu_campaign": "КАМПАНИЯ",
+  "campaign_title": "КАМПАНИЯ",
+  "campaign_level": "Уровень",
+  "campaign_victory": "ПОБЕДА! 🌟",
+  "campaign_defeat": "ПОРАЖЕНИЕ",
+  "campaign_next": "Следующий ▶",
+  "campaign_retry": "🔄 Заново",
+  "campaign_menu": "🏠 Меню"
 }

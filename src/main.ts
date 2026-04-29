@@ -23,7 +23,7 @@ import { YandexSDK } from './sdk/YandexSDK';
 import { AdManager } from './sdk/AdManager';
 import { AudioManager } from './audio/AudioManager';
 
-// ─── UI Screens ─────────────────────────────────────
+// ─── UI Screens ───────────────────────────────────
 import { HUD } from './ui/HUD';
 import { MainMenu } from './ui/MainMenu';
 import { BackgroundSystem } from './ui/BackgroundSystem';
@@ -32,6 +32,12 @@ import { GachaScreen } from './ui/GachaScreen';
 import { GameOverPopup } from './ui/GameOverPopup';
 import { WardrobeScreen } from './ui/WardrobeScreen';
 import { SettingsPopup } from './ui/SettingsPopup';
+import { CampaignScreen } from './ui/CampaignScreen';
+import { CampaignPopup } from './ui/CampaignPopup';
+
+// ─── Campaign ───────────────────────────────────
+import { CampaignScene } from './game/CampaignScene';
+import { getCampaignLevel, CAMPAIGN_LEVELS } from './game/LevelConfig';
 
 // ─── i18n ───────────────────────────────────────────
 import { loadLocale } from './i18n/i18n';
@@ -50,8 +56,13 @@ interface AppState {
   highScore: number;
   language: string | null;
   // Active UI references (only one screen at a time)
-  currentScreen: 'menu' | 'game' | 'shop' | 'gacha' | 'gameover' | 'wardrobe';
+  currentScreen: 'menu' | 'game' | 'shop' | 'gacha' | 'gameover' | 'wardrobe' | 'campaign_select' | 'campaign_game';
   gameScene: GameScene | null;
+  campaignScene: CampaignScene | null;
+  campaignPopup: CampaignPopup | null;
+  campaignScreen: CampaignScreen | null;
+  campaignUnlocked: number;
+  campaignCompleted: Set<number>;
   hud: HUD | null;
   mainMenu: MainMenu | null;
   shopScreen: ShopScreen | null;
@@ -149,6 +160,11 @@ async function main(): Promise<void> {
     language: saveData.language,
     currentScreen: 'menu',
     gameScene: null,
+    campaignScene: null,
+    campaignPopup: null,
+    campaignScreen: null,
+    campaignUnlocked: saveData.campaignUnlocked ?? 1,
+    campaignCompleted: new Set(saveData.campaignCompleted ?? []),
     hud: null,
     mainMenu: null,
     shopScreen: null,
@@ -224,6 +240,8 @@ function collectSaveData(state: AppState): SaveData {
     },
     soundEnabled: state.audioManager.soundEnabled,
     language: state.language,
+    campaignUnlocked: state.campaignUnlocked,
+    campaignCompleted: [...state.campaignCompleted],
   };
 }
 
@@ -234,6 +252,18 @@ async function autoSave(state: AppState): Promise<void> {
 // ─── Screen Management ──────────────────────────────
 
 function clearCurrentScreen(state: AppState): void {
+  if (state.campaignScene) {
+    state.campaignScene.destroy();
+    state.campaignScene = null;
+  }
+  if (state.campaignPopup) {
+    state.campaignPopup.destroy();
+    state.campaignPopup = null;
+  }
+  if (state.campaignScreen) {
+    state.campaignScreen.destroy();
+    state.campaignScreen = null;
+  }
   if (state.gameScene) {
     state.gameScene.destroy();
     state.gameScene = null;
@@ -285,6 +315,10 @@ function showMainMenu(state: AppState): void {
     onPlay: () => {
       state.audioManager.play('button_click');
       startGame(state);
+    },
+    onCampaign: () => {
+      state.audioManager.play('button_click');
+      showCampaign(state);
     },
     onShop: () => {
       state.audioManager.play('button_click');
@@ -720,6 +754,129 @@ function showSettings(state: AppState): void {
   );
 
   state.gameRoot.addChild(state.settingsPopup.container);
+}
+// ─── Campaign Mode ──────────────────────────────────
+
+function showCampaign(state: AppState): void {
+  clearCurrentScreen(state);
+  state.currentScreen = 'campaign_select';
+  state.bgSystem.setMode('static');
+
+  const sw = state.logicalWidth;
+  const sh = state.logicalHeight;
+
+  state.campaignScreen = new CampaignScreen(sw, sh, state.campaignUnlocked, state.campaignCompleted, {
+    onSelectLevel: (levelId: number) => {
+      state.audioManager.play('button_click');
+      startCampaignLevel(state, levelId);
+    },
+    onBack: () => {
+      state.audioManager.play('button_click');
+      showMainMenu(state);
+    },
+  });
+
+  state.gameRoot.addChild(state.campaignScreen.container);
+}
+
+function startCampaignLevel(state: AppState, levelId: number): void {
+  const levelConfig = getCampaignLevel(levelId);
+  if (!levelConfig) return;
+
+  clearCurrentScreen(state);
+  state.currentScreen = 'campaign_game';
+  state.bgSystem.setMode('gameplay');
+
+  state.campaignScene = new CampaignScene(state.app, levelConfig, {
+    onVictory: (id) => {
+      handleCampaignVictory(state, id);
+    },
+    onDefeat: (id) => {
+      handleCampaignDefeat(state, id);
+    },
+    onMerge: (level, x, y) => {
+      state.audioManager.play('merge_pop');
+      state.audioManager.play('coin');
+      // VFX at merge point
+      state.campaignScene?.vfx.showFloatingScore(x, y - 20, level * 10, 0xf8b500);
+    },
+    onDrop: () => {
+      state.audioManager.play('drop');
+    },
+  }, state.skinManager);
+
+  state.gameRoot.addChild(state.campaignScene.container);
+
+  // Create HUD (minimal — no score/coins tracking in campaign)
+  state.hud = new HUD(state.logicalWidth, {
+    onPause: () => {
+      state.audioManager.play('button_click');
+      showCampaign(state);
+    },
+    onSoundToggle: () => {
+      const newState = !state.audioManager.soundEnabled;
+      state.audioManager.setSoundEnabled(newState);
+      autoSave(state);
+    },
+  });
+  state.hud.setSoundIcon(state.audioManager.soundEnabled);
+  state.gameRoot.addChild(state.hud.container);
+
+  state.campaignScene.start();
+}
+
+function handleCampaignVictory(state: AppState, levelId: number): void {
+  state.bgSystem.setMode('static');
+  state.audioManager.play('upgrade');
+
+  // Mark level as completed and unlock next
+  state.campaignCompleted.add(levelId);
+  if (levelId >= state.campaignUnlocked && levelId < CAMPAIGN_LEVELS.length) {
+    state.campaignUnlocked = levelId + 1;
+  }
+  autoSave(state);
+
+  const sw = state.logicalWidth;
+  const sh = state.logicalHeight;
+  const hasNext = levelId < CAMPAIGN_LEVELS.length;
+
+  state.campaignPopup = new CampaignPopup(sw, sh, true, levelId, {
+    onNext: hasNext ? () => {
+      state.audioManager.play('button_click');
+      startCampaignLevel(state, levelId + 1);
+    } : undefined,
+    onRetry: () => {
+      state.audioManager.play('button_click');
+      startCampaignLevel(state, levelId);
+    },
+    onMenu: () => {
+      state.audioManager.play('button_click');
+      showCampaign(state);
+    },
+  });
+
+  state.gameRoot.addChild(state.campaignPopup.container);
+}
+
+function handleCampaignDefeat(state: AppState, levelId: number): void {
+  state.bgSystem.setMode('static');
+  state.audioManager.play('gameover');
+
+  const sw = state.logicalWidth;
+  const sh = state.logicalHeight;
+
+  state.campaignPopup = new CampaignPopup(sw, sh, false, levelId, {
+    onRetry: () => {
+      state.audioManager.play('button_click');
+      startCampaignLevel(state, levelId);
+    },
+    onMenu: () => {
+      state.audioManager.play('button_click');
+      showCampaign(state);
+    },
+  });
+
+  state.gameRoot.addChild(state.campaignPopup.container);
 }
 
 // ─── Start ──────────────────────────────────────────

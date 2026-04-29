@@ -58,5 +58,15 @@
   "anomaly_prefix": "ANOMALY:",
   "anomaly_blackhole": "BLACK HOLE",
   "anomaly_tornado": "TORNADO",
-  "anomaly_moon": "LUNAR GRAVITY"
+  "anomaly_moon": "LUNAR GRAVITY",
+
+  "menu_endless": "ENDLESS",
+  "menu_campaign": "CAMPAIGN",
+  "campaign_title": "CAMPAIGN",
+  "campaign_level": "Level",
+  "campaign_victory": "VICTORY! \ud83c\udf1f",
+  "campaign_defeat": "DEFEAT",
+  "campaign_next": "Next \u25b6",
+  "campaign_retry": "\ud83d\udd04 Retry",
+  "campaign_menu": "\ud83c\udfe0 Menu"
 }

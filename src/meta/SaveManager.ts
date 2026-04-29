@@ -30,6 +30,10 @@ export interface SaveData {
   soundEnabled: boolean;
   /** Language override ('ru' or 'en' or null) */
   language: string | null;
+  /** Campaign: highest unlocked level (1-30) */
+  campaignUnlocked: number;
+  /** Campaign: completed level IDs */
+  campaignCompleted: number[];
 }
 
 // ─── Constants ──────────────────────────────────────
@@ -133,6 +137,8 @@ export class SaveManager {
       legendaryProgress: { 8: 0, 9: 0 },
       soundEnabled: true,
       language: null,
+      campaignUnlocked: 1,
+      campaignCompleted: [],
     };
   }
 
@@ -182,6 +188,8 @@ export class SaveManager {
       legendaryProgress:  partial.legendaryProgress  ?? defaults.legendaryProgress,
       soundEnabled:       partial.soundEnabled       ?? defaults.soundEnabled,
       language:           partial.language           ?? defaults.language,
+      campaignUnlocked:   partial.campaignUnlocked   ?? defaults.campaignUnlocked,
+      campaignCompleted:  partial.campaignCompleted  ?? defaults.campaignCompleted,
     };
   }
 }
