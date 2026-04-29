@@ -2,7 +2,7 @@ import Matter from 'matter-js';
 import { Container, Graphics } from 'pixi.js';
 import type { BarrelShape, ObstacleDef } from './LevelConfig';
 
-const WALL_THICKNESS = 12;
+const WALL_THICKNESS = 40;
 const WALL_OPTIONS: Matter.IBodyDefinition = {
   isStatic: true,
   restitution: 0.45,
@@ -219,14 +219,41 @@ export class CampaignBarrel {
     }
     this.segments = [];
 
-    // Helper: create a wall body between two points
-    const createWallSegment = (p1: { x: number; y: number }, p2: { x: number; y: number }) => {
-      const midX = (p1.x + p2.x) / 2;
-      const midY = (p1.y + p2.y) / 2;
+    /**
+     * Create a wall body between two points, offset OUTWARD so the inner
+     * face of the rectangle exactly matches the visual line.
+     *
+     * outwardSide: 'left' or 'right' relative to the direction p1→p2.
+     *   - Left wall segments: 'left'  (outward = away from barrel center)
+     *   - Right wall segments: 'right' (outward = away from barrel center)
+     *   - Floor segments: 'left'  (outward = downward)
+     */
+    const createWallSegment = (
+      p1: { x: number; y: number },
+      p2: { x: number; y: number },
+      outwardSide: 'left' | 'right',
+    ) => {
       const dx = p2.x - p1.x;
       const dy = p2.y - p1.y;
       const length = Math.sqrt(dx * dx + dy * dy);
       const angle = Math.atan2(dy, dx);
+
+      // Compute outward normal perpendicular to segment
+      // 'left' of direction p1→p2: normal = (-dy, dx) / len
+      // 'right' of direction p1→p2: normal = (dy, -dx) / len
+      let nx: number, ny: number;
+      if (outwardSide === 'left') {
+        nx = -dy / length;
+        ny = dx / length;
+      } else {
+        nx = dy / length;
+        ny = -dx / length;
+      }
+
+      // Offset the center so the INNER face sits exactly on the visual line
+      const offset = WALL_THICKNESS / 2;
+      const midX = (p1.x + p2.x) / 2 + nx * offset;
+      const midY = (p1.y + p2.y) / 2 + ny * offset;
 
       const body = Matter.Bodies.rectangle(midX, midY, length + 10, WALL_THICKNESS, {
         ...(WALL_OPTIONS as Matter.IChamferableBodyDefinition),
@@ -236,19 +263,19 @@ export class CampaignBarrel {
       Matter.Composite.add(this.engine.world, body);
     };
 
-    // Build left wall segments
+    // Build left wall segments (outward = left of direction top→bottom)
     for (let i = 0; i < this.leftWall.length - 1; i++) {
-      createWallSegment(this.leftWall[i], this.leftWall[i + 1]);
+      createWallSegment(this.leftWall[i], this.leftWall[i + 1], 'left');
     }
 
-    // Build right wall segments
+    // Build right wall segments (outward = right of direction top→bottom)
     for (let i = 0; i < this.rightWall.length - 1; i++) {
-      createWallSegment(this.rightWall[i], this.rightWall[i + 1]);
+      createWallSegment(this.rightWall[i], this.rightWall[i + 1], 'right');
     }
 
-    // Build floor segments
+    // Build floor segments (outward = left of direction left→right = downward)
     for (let i = 0; i < this.floor.length - 1; i++) {
-      createWallSegment(this.floor[i], this.floor[i + 1]);
+      createWallSegment(this.floor[i], this.floor[i + 1], 'left');
     }
 
     // Build lid across the top opening
@@ -257,7 +284,7 @@ export class CampaignBarrel {
     const rightTopX = this.rightWall[0].x;
     const rightTopY = this.rightWall[0].y;
     const lidMidX = (leftTopX + rightTopX) / 2;
-    const lidMidY = (leftTopY + rightTopY) / 2;
+    const lidMidY = (leftTopY + rightTopY) / 2 - WALL_THICKNESS / 2;
     const lidWidth = Math.sqrt((rightTopX - leftTopX) ** 2 + (rightTopY - leftTopY) ** 2);
 
     this.lid = Matter.Bodies.rectangle(lidMidX, lidMidY, lidWidth + 20, WALL_THICKNESS, {
