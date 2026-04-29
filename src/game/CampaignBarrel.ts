@@ -2,7 +2,7 @@ import Matter from 'matter-js';
 import { Container, Graphics } from 'pixi.js';
 import type { BarrelShape, ObstacleDef } from './LevelConfig';
 
-const WALL_THICKNESS = 80;
+const WALL_THICKNESS = 12;
 const WALL_OPTIONS: Matter.IBodyDefinition = {
   isStatic: true,
   restitution: 0.45,

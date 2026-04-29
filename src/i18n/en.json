@@ -60,9 +60,9 @@
   "anomaly_tornado": "TORNADO",
   "anomaly_moon": "LUNAR GRAVITY",
 
-  "menu_endless": "ENDLESS",
-  "menu_campaign": "CAMPAIGN",
-  "campaign_title": "CAMPAIGN",
+  "menu_endless": "PLAY",
+  "menu_campaign": "LEVELS",
+  "campaign_title": "LEVELS",
   "campaign_level": "Level",
   "campaign_victory": "VICTORY! \ud83c\udf1f",
   "campaign_defeat": "DEFEAT",

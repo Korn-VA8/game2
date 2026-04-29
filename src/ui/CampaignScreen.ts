@@ -34,14 +34,19 @@ export class CampaignScreen {
     this.container = new Container();
 
     const cx = screenWidth / 2;
-    let yPos = 40;
+    let yPos = 25;
+
+    // Back button (top-left, above everything)
+    const backBtn = this.createTextButton(t('shop_back'), 16, yPos, 14, () => callbacks.onBack());
+    this.container.addChild(backBtn);
 
     // Title
+    yPos += 35;
     const title = new Text({
       text: t('campaign_title'),
       style: new TextStyle({
         fontFamily: FONT_HEADING,
-        fontSize: Math.min(36, screenWidth * 0.08),
+        fontSize: Math.min(30, screenWidth * 0.07),
         fontWeight: '900',
         fill: ACCENT,
         letterSpacing: 3,
@@ -52,13 +57,8 @@ export class CampaignScreen {
     title.position.set(cx, yPos);
     this.container.addChild(title);
 
-    // Back button
-    yPos += 10;
-    const backBtn = this.createTextButton(t('shop_back'), 50, yPos, 14, () => callbacks.onBack());
-    this.container.addChild(backBtn);
-
     // Level grid 5×6
-    yPos += 40;
+    yPos += 35;
     const cols = 5;
     const rows = 6;
     const btnSize = Math.min(55, (screenWidth - 60) / cols);

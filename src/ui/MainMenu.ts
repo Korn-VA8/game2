@@ -80,7 +80,7 @@ export class MainMenu {
     // Subtitle
     yPos += 45;
     const subtitle = new Text({
-      text: 'Jelly Merge Puzzle',
+      text: 'mi ❤️',
       style: new TextStyle({
         fontFamily: FONT_BODY,
         fontSize: 16,
@@ -138,26 +138,26 @@ export class MainMenu {
     this.coinsText.position.set(cx + 10, yPos);
     this.container.addChild(this.coinsText);
 
-    // ─── Play Buttons: Endless + Campaign side by side ───
+    // ─── Play Buttons: Play + Levels side by side ───
     yPos += 55;
-    const playBtnW = Math.min(135, (screenWidth - 48) / 2);
+    const playBtnW = Math.min(145, (screenWidth - 30) / 2);
     const playBtnH = 56;
-    const playGap = 10;
+    const playGap = 8;
     const playLeft = cx - playBtnW - playGap / 2;
 
-    // Endless button (red, pulsating)
-    const playIcon = IconFactory.createPlayIcon(20);
+    // Play button (red, pulsating)
+    const playIcon = IconFactory.createPlayIcon(18);
     this.playBtn = this.createButton(
-      t('menu_endless'), playLeft + playBtnW / 2, yPos, playBtnW, playBtnH, BTN_PLAY_COLOR, 18, () => {
+      t('menu_endless'), playLeft + playBtnW / 2, yPos, playBtnW, playBtnH, BTN_PLAY_COLOR, 20, () => {
         this.animating = false;
         callbacks.onPlay();
       }, playIcon,
     );
     this.container.addChild(this.playBtn);
 
-    // Campaign button (blue-ish)
+    // Levels button (green-ish)
     const campaignBtn = this.createButton(
-      t('menu_campaign'), playLeft + playBtnW + playGap + playBtnW / 2, yPos, playBtnW, playBtnH, 0x1e4a3a, 18, () => {
+      t('menu_campaign'), playLeft + playBtnW + playGap + playBtnW / 2, yPos, playBtnW, playBtnH, 0x1e4a3a, 20, () => {
         this.animating = false;
         callbacks.onCampaign();
       },

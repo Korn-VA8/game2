@@ -60,9 +60,9 @@
   "anomaly_tornado": "ТОРНАДО",
   "anomaly_moon": "ЛУННАЯ ГРАВИТАЦИЯ",
 
-  "menu_endless": "БЕСКОНЕЧНАЯ",
-  "menu_campaign": "КАМПАНИЯ",
-  "campaign_title": "КАМПАНИЯ",
+  "menu_endless": "ИГРА",
+  "menu_campaign": "УРОВНИ",
+  "campaign_title": "УРОВНИ",
   "campaign_level": "Уровень",
   "campaign_victory": "ПОБЕДА! 🌟",
   "campaign_defeat": "ПОРАЖЕНИЕ",
